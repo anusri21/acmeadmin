@@ -471,6 +471,7 @@ class MainController extends Controller
         $pdfrs = DB::table('acme-pdf')
                 ->select('acme-pdf.*','acme-pdfcatgeory.id as pdfcatid','acme-pdfcatgeory.category')
                 ->join('acme-pdfcatgeory','acme-pdfcatgeory.id','=','acme-pdf.pdf_category')
+                ->where('acme-pdf.status',1)
                 ->get();
         return view('backend.pages.pdflist')->with('pdfrs',$pdfrs)->with('category',$category);
     }
@@ -494,5 +495,18 @@ class MainController extends Controller
                     ], 200);
         }
 
-            }
+    }
+    
+    public function deletepdf($id)
+    {
+        //dd($id);
+        $course = array(
+           
+            'status'=>0,
+            'updated_at' => date("Y-m-d H:i:s")
+        );
+        $updatecourse=DB::table('acme-pdf')->where('id', $id)->update($course); 
+        return redirect('backend/pdflist ');
+       
+    }
 }
