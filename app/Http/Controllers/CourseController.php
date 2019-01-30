@@ -515,4 +515,85 @@ class CourseController extends Controller
         }
 
     }
+    public function saveeditpdf(Request $request)
+    {
+        $data=$request->all();
+      
+        //dd($data);
+        if ($data != null) {
+
+            $input = [
+                'id' => isset($data['id']) ? $data['id'] : false,
+                'pdf_category' => isset($data['pdf_category']) ? $data['pdf_category'] : '',  
+                'pdf_title' => isset($data['pdf_title']) ? $data['pdf_title'] : '',  
+                'pdf_desc' => isset($data['pdf_desc']) ? $data['pdf_desc'] : '',  
+                'pdf' => isset($data['pdf']) ? $data['pdf'] : '',  
+                
+
+            ];
+           //dd($input);
+            if ($request->hasFile('pdf')) {
+                $pdffile = $request->file('pdf')->getClientOriginalExtension();
+                $rand=substr(number_format(time() * rand(), 0, '', ''), 0, 4);
+                $pdfName = 'Pdf' . '-' . $rand . '.' . $pdffile;
+                //print_r($imageName);die;
+        
+                $pdfPath = $request->file('pdf')->move(public_path() . '\upload\pdf', $pdfName);
+                //print_r($pdfPath);die;
+                //$img = Image::make($imagePath->getRealPath());
+                $url = URL::to("/");
+                $pdfurl = $url.'/public/upload/pdf/' . $pdfName;
+               // dd($pdfurl);
+            }
+            
+            else{
+                $pdfName= '';
+            }
+            //dd($pdfName);
+            $rules = array(
+                'pdf_category' => 'required',
+    
+            );
+            $checkValid = Validator::make($input, $rules);
+            if ($checkValid->fails()) {
+                $data = Session::flash('error', 'Please Provide All Datas!');
+                return Redirect::back()
+                ->withInput()
+                ->withErrors($data);
+            } else { 
+              
+                $dataInput = array(
+                    'id' => $input['id'],
+                    'pdf_category'=>$input['pdf_category'], 
+                    'pdf_title'=>$input['pdf_title'], 
+                    'pdf_desc'=>$input['pdf_desc'], 
+                    'pdf_path'=>$pdfurl,
+                    'pdf'=>$pdfName 
+                );
+             
+                $addpdf = $this->course->savepdf($dataInput);
+              
+               if ($addpdf) {
+              
+                return Response::json([
+                    'status' => 1,
+                    'data' => $addpdf
+                    ]);
+
+                } else {
+                    $data = Session::flash('error', 'Please Provide All Datas!');
+                        return Redirect::back()
+                        ->withInput()
+                        ->withErrors($data);
+                }
+            }
+        } else {
+            return Response::json([
+                        'status' => 0,
+                        'message' => "No data"
+            ]);
+        }
+        
+    }
+
 }
