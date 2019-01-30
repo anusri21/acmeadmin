@@ -464,4 +464,35 @@ class MainController extends Controller
         //dd($pdf);
         return view('backend.pages.viewpdf')->with('pdf',$pdf);
     }
+    public function pdflist()
+    {
+        $category = DB::table('acme-pdfcatgeory')->get();
+
+        $pdfrs = DB::table('acme-pdf')
+                ->select('acme-pdf.*','acme-pdfcatgeory.id as pdfcatid','acme-pdfcatgeory.category')
+                ->join('acme-pdfcatgeory','acme-pdfcatgeory.id','=','acme-pdf.pdf_category')
+                ->get();
+        return view('backend.pages.pdflist')->with('pdfrs',$pdfrs)->with('category',$category);
+    }
+    public function editpdf($id)
+    {
+        $pdfrs = DB::table('acme-pdf')
+                ->select('acme-pdf.*','acme-pdfcatgeory.id as pdfcatid','acme-pdfcatgeory.category')
+                ->join('acme-pdfcatgeory','acme-pdfcatgeory.id','=','acme-pdf.pdf_category')
+                ->where('acme-pdf.id',$id)
+                ->first();
+        //dd($pdfrs);
+        if($pdfrs){
+            return Response::json([
+                'status' => 1,
+                'pdf' => $pdfrs,
+                    ], 200);
+        }else{
+            return Response::json([
+                'status' => 1,
+                'message' => 'Not Selected'
+                    ], 200);
+        }
+
+            }
 }
