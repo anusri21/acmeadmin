@@ -87,6 +87,8 @@
           <ul class="treeview-menu">
             <li><a href="{{url('backend/addpdfcategory')}}"><i class="fa fa-address-book"></i>Add Pdf Category</a></li>
             <li><a href="{{url('backend/addpdf')}}"><i class="fa fa-address-book"></i> Add Pdf</a></li>
+            <li><a href="{{url('backend/pdflist')}}"><i class="fa fa-address-book"></i>Pdf List</a></li>
+
           </ul>
         </li>
       </ul>
