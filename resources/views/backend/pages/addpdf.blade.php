@@ -9,8 +9,14 @@
             </div>
             <div class="box-body">
                <!-- Date dd/mm/yyyy -->
-               <form action="{{url('backend/addpdf')}}" method="post">
+               <form action="{{url('backend/addpdf')}}" method="post" enctype="multipart/form-data">
                {{ csrf_field() }}
+
+               <div class="flash-message">
+                              @include('backend.pages.notification')
+                        </div>
+
+                        
                <div class="form-group">
                   <label>Category:</label>
                   <div class="input-group">
@@ -45,12 +51,12 @@
                   <!-- /.input group -->
                </div>
                <div class="form-group">
-                     <label>Pdf</label>
+                     <label>Upload Pdf</label>
                      <div class="input-group">
                         <div class="input-group-addon">
                            <i class="fa fa-calendar"></i>
                         </div>
-                        <input type="text" name="pdf_path" id="text-input"  placeholder="Name" class="form-control" required>
+                        <input type="file" name="pdf" id="text-input"  placeholder="Name" class="form-control" required>
                      </div>
                      <!-- /.input group -->
                   </div>
