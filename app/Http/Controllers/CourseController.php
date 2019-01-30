@@ -8,6 +8,8 @@ use DB;
 use Session;
 use Redirect;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+
 
 class CourseController extends Controller
 {
@@ -414,11 +416,29 @@ class CourseController extends Controller
                 'pdf_category' => isset($data['pdf_category']) ? $data['pdf_category'] : '',  
                 'pdf_title' => isset($data['pdf_title']) ? $data['pdf_title'] : '',  
                 'pdf_desc' => isset($data['pdf_desc']) ? $data['pdf_desc'] : '',  
-                'pdf_path' => isset($data['pdf_path']) ? $data['pdf_path'] : '',  
+                'pdf' => isset($data['pdf']) ? $data['pdf'] : '',  
                 
 
             ];
-           
+           //dd($input);
+            if ($request->hasFile('pdf')) {
+                $pdffile = $request->file('pdf')->getClientOriginalExtension();
+                $rand=substr(number_format(time() * rand(), 0, '', ''), 0, 4);
+                $pdfName = 'Pdf' . '-' . $rand . '.' . $pdffile;
+                //print_r($imageName);die;
+        
+                $pdfPath = $request->file('pdf')->move(public_path() . '\upload\pdf', $pdfName);
+                //print_r($pdfPath);die;
+                //$img = Image::make($imagePath->getRealPath());
+                $url = URL::to("/");
+                $pdfurl = $url.'/public/upload/pdf/' . $pdfName;
+               // dd($pdfurl);
+            }
+            
+            else{
+                $pdfName= '';
+            }
+            //dd($pdfName);
             $rules = array(
                 'pdf_category' => 'required',
     
@@ -436,17 +456,17 @@ class CourseController extends Controller
                     'pdf_category'=>$input['pdf_category'], 
                     'pdf_title'=>$input['pdf_title'], 
                     'pdf_desc'=>$input['pdf_desc'], 
-                    'pdf_path'=>$input['pdf_path'], 
+                    'pdf_path'=>$pdfurl,
+                    'pdf'=>$pdfName 
                 );
              
                 $addpdf = $this->course->savepdf($dataInput);
               
                if ($addpdf) {
               
-                    return Response::json([
-                        'status' => 1,
-                        'message' => 'Successfully Added'
-                    ]);
+                $data = Session::flash('message', 'Successfully Added!');
+                return Redirect::back()->with(['data', $data], ['message', $data]);
+
                 } else {
                     $data = Session::flash('error', 'Please Provide All Datas!');
                         return Redirect::back()
@@ -462,6 +482,7 @@ class CourseController extends Controller
         }
         
     }
+
     public function getpdfcategory($id)
     {
         $pdfcat = DB::table('acme-pdf')->where('pdf_category',$id)->get();
