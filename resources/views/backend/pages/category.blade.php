@@ -126,9 +126,9 @@ $(document).on('click', '#viewpdf', function () {
                url: url,
                success:function(data){
                  
-                pdfpath= data.pdf.pdf_path;
+                pdfpath= data.pdf.pdf;
                 
-                pathurl = "{{ asset('public/pdf') }}"+"/"+pdfpath+"?page=hsn#toolbar=0";
+                pathurl = "{{ asset('public/upload/pdf') }}"+"/"+pdfpath+"?page=hsn#toolbar=0";
                 $('#showpdf').attr('src', pathurl);
                 $('#myModal').modal('show');
                }
