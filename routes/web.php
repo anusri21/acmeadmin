@@ -161,6 +161,12 @@ Route::group(['prefix' => 'backend'], function(){
     Route::get('getpdfcategory/{id}','CourseController@getpdfcategory');
     Route::get('getpdf/{id}','CourseController@getpdf');
     Route::get('viewpdf/{id}','MainController@viewpdf');
+    Route::get('pdflist','MainController@pdflist');
+    Route::get('editpdf/{id}','MainController@editpdf');
+    Route::post('saveeditpdf','CourseController@saveeditpdf');
+    Route::get('deletepdf/{id}','MainController@deletepdf');
+
+
 
 });
 
